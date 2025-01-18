@@ -5,7 +5,6 @@ use ggez::event::{self, EventHandler};
 use ggez::graphics::{self, Color, Text};
 use ggez::input::keyboard::{KeyCode, KeyInput};
 use ggez::{Context, ContextBuilder, GameResult};
-use nalgebra::Vector2;
 
 pub struct GgezRender {
     simulator: Simulator,
@@ -18,7 +17,8 @@ impl GgezRender {
     pub fn new(_ctx: &mut Context) -> GgezRender {
         GgezRender {
             simulator: Simulator::new(VehicleState {
-                position: Vector2::new(700., 400.),
+                position_x: 700.,
+                position_y: 400.,
                 angle: 0.,
                 ..Default::default()
             }),
@@ -54,7 +54,7 @@ impl EventHandler for GgezRender {
         let mut canvas = graphics::Canvas::from_frame(ctx, Color::from_rgb(100, 149, 237));
 
         let state = self.simulator.get_state();
-        let car_position = state.vehicle_state.position;
+        let car_position = state.vehicle_state.position();
         let angle_display = Text::new(format!("Angle: {}", self.picked_angle));
 
         canvas.draw(

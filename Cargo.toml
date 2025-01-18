@@ -13,6 +13,7 @@ ggez = "0.9.3"
 nalgebra = "0.33.2"
 thiserror = "2.0.11"
 pyo3 = { version = "0.23.3", optional = true }
+tiny-skia = "0.11.4"
 
 [features]
 python = ["dep:pyo3"]

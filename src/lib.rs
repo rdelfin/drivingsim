@@ -3,6 +3,7 @@ use nalgebra::Vector2;
 #[cfg(feature = "python")]
 use pyo3::prelude::*;
 use std::time::Duration;
+use tiny_skia::{Paint, Pixmap, Rect, Transform};
 
 mod dynamics;
 pub mod render;
@@ -12,6 +13,64 @@ pub mod render;
 pub struct SimState {
     pub vehicle_state: VehicleState,
     pub reward_points: Vec<(Vector2<f32>, f32)>,
+}
+
+impl SimState {
+    pub fn gen_image_impl(&self) -> Pixmap {
+        let mut pixmap = Pixmap::new(1280, 800).unwrap();
+
+        let mut background_paint = Paint::default();
+        background_paint.set_color_rgba8(0, 0, 0, 255);
+        pixmap.fill_rect(
+            Rect::from_ltrb(0., 0., 1280., 800.).unwrap(),
+            &background_paint,
+            Transform::identity(),
+            None,
+        );
+
+        let mut car_paint = Paint::default();
+        car_paint.set_color_rgba8(255, 0, 0, 255);
+        pixmap.fill_rect(
+            Rect::from_ltrb(
+                -self.vehicle_state.base_length / 2.,
+                -25.,
+                self.vehicle_state.base_length / 2.,
+                25.,
+            )
+            .unwrap()
+            .transform(
+                Transform::from_rotate(self.vehicle_state.angle.to_degrees())
+                    .post_translate(self.vehicle_state.position_x, self.vehicle_state.position_y),
+            )
+            .unwrap(),
+            &car_paint,
+            Transform::identity(),
+            None,
+        );
+
+        let mut reward_paint = Paint::default();
+        reward_paint.set_color_rgba8(0, 255, 0, 255);
+        for (pos, _) in &self.reward_points {
+            pixmap.fill_rect(
+                Rect::from_xywh(pos.x, pos.y, 10., 10.).unwrap(),
+                &reward_paint,
+                Transform::identity(),
+                None,
+            );
+        }
+        pixmap
+    }
+}
+
+#[cfg_attr(feature = "python", pymethods)]
+impl SimState {
+    pub fn gen_image_raw(&self) -> Vec<u8> {
+        self.gen_image_impl().take()
+    }
+
+    pub fn gen_image_png(&self) -> Vec<u8> {
+        self.gen_image_impl().encode_png().unwrap()
+    }
 }
 
 #[cfg_attr(feature = "python", pyclass)]
@@ -91,7 +150,7 @@ impl Simulator {
             .step(acceleration, wheel_steer_angle, delta_t);
 
         let got_reward_fn =
-            |val: &(Vector2<f32>, f32)| (self.state.vehicle_state.position - val.0).norm() < 50.;
+            |val: &(Vector2<f32>, f32)| (self.state.vehicle_state.position() - val.0).norm() < 50.;
 
         let mut reward = 0.;
         self.state.reward_points.retain(|val| {

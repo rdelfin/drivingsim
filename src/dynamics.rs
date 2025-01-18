@@ -3,10 +3,11 @@ use nalgebra::Vector2;
 use pyo3::prelude::*;
 use std::time::Duration;
 
-#[cfg_attr(feature = "python", pyclass)]
+#[cfg_attr(feature = "python", pyclass(get_all, set_all))]
 #[derive(Debug, Clone)]
 pub struct VehicleState {
-    pub position: Vector2<f32>,
+    pub position_x: f32,
+    pub position_y: f32,
     pub speed: f32,
     pub angle: f32,
     pub base_length: f32,
@@ -16,7 +17,8 @@ pub struct VehicleState {
 impl Default for VehicleState {
     fn default() -> VehicleState {
         VehicleState {
-            position: Vector2::default(),
+            position_x: 0.,
+            position_y: 0.,
             speed: 0.,
             angle: 0.,
             base_length: 100.,
@@ -50,9 +52,18 @@ impl VehicleState {
     pub fn step(&mut self, acceleration: f32, wheel_steer_angle: f32, delta_t: Duration) {
         let delta_t_s = delta_t.as_secs_f32();
         // The order of modification is important to make sure things propagate correctly
-        self.position += self.speed * Vector2::new(self.angle.cos(), self.angle.sin()) * delta_t_s;
+        let position_delta =
+            self.speed * Vector2::new(self.angle.cos(), self.angle.sin()) * delta_t_s;
+        self.position_x += position_delta.x;
+        self.position_y += position_delta.y;
         self.angle += self.speed * wheel_steer_angle.tan() / self.base_length * delta_t_s;
         self.speed += acceleration * delta_t_s;
         self.speed = self.speed.clamp(-self.max_speed, self.max_speed);
+    }
+}
+
+impl VehicleState {
+    pub fn position(&self) -> Vector2<f32> {
+        Vector2::new(self.position_x, self.position_y)
     }
 }
