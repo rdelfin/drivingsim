@@ -3,13 +3,17 @@ name = "drivingsim"
 version = "0.1.0"
 edition = "2021"
 
-[workspace]
-members = [
-  "drivingsim_py",
-]
+[lib]
+name = "drivingsim"
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 anyhow = "1.0.95"
 ggez = "0.9.3"
 nalgebra = "0.33.2"
 thiserror = "2.0.11"
+pyo3 = { version = "0.23.3", optional = true }
+
+[features]
+python = ["dep:pyo3"]
+extension-module = ["pyo3/extension-module"]

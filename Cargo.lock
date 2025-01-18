@@ -659,15 +659,8 @@ dependencies = [
  "anyhow",
  "ggez",
  "nalgebra",
- "thiserror 2.0.11",
-]
-
-[[package]]
-name = "drivingsim_py"
-version = "0.1.0"
-dependencies = [
- "drivingsim",
  "pyo3",
+ "thiserror 2.0.11",
 ]
 
 [[package]]

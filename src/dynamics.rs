@@ -1,6 +1,10 @@
 use nalgebra::Vector2;
+#[cfg(feature = "python")]
+use pyo3::prelude::*;
 use std::time::Duration;
 
+#[cfg_attr(feature = "python", pyclass)]
+#[derive(Debug, Clone)]
 pub struct VehicleState {
     pub position: Vector2<f32>,
     pub speed: f32,
@@ -35,7 +39,14 @@ impl Default for VehicleState {
 // - a is the acceleration
 // - L is the wheel base length, or distance between both wheels
 
+#[cfg_attr(feature = "python", pymethods)]
 impl VehicleState {
+    #[cfg(feature = "python")]
+    #[new]
+    pub fn new() -> VehicleState {
+        Self::default()
+    }
+
     pub fn step(&mut self, acceleration: f32, wheel_steer_angle: f32, delta_t: Duration) {
         let delta_t_s = delta_t.as_secs_f32();
         // The order of modification is important to make sure things propagate correctly
