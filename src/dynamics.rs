@@ -15,8 +15,8 @@ impl Default for VehicleState {
             position: Vector2::default(),
             speed: 0.,
             angle: 0.,
-            base_length: 10.,
-            max_speed: 10.,
+            base_length: 100.,
+            max_speed: 1000.,
         }
     }
 }

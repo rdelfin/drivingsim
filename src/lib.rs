@@ -2,7 +2,7 @@ use crate::dynamics::VehicleState;
 use std::time::Duration;
 
 mod dynamics;
-mod render;
+pub mod render;
 
 #[derive(Default)]
 pub struct SimState {
@@ -26,11 +26,13 @@ pub struct Simulator {
 }
 
 impl Simulator {
-    pub fn new() -> Simulator {
+    pub fn new(initial_vehicle_state: VehicleState) -> Simulator {
         Simulator {
-            state: SimState::default(),
-            max_accelerator: 0.5,
-            max_angle: 45.,
+            state: SimState {
+                vehicle_state: initial_vehicle_state,
+            },
+            max_accelerator: 100.,
+            max_angle: std::f32::consts::FRAC_PI_4,
         }
     }
 
