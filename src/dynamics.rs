@@ -40,7 +40,7 @@ impl VehicleState {
         let delta_t_s = delta_t.as_secs_f32();
         // The order of modification is important to make sure things propagate correctly
         self.position += self.speed * Vector2::new(self.angle.cos(), self.angle.sin()) * delta_t_s;
-        self.angle += self.speed * wheel_angle.tan() / self.base_length * delta_t_s;
+        self.angle += self.speed * wheel_steer_angle.tan() / self.base_length * delta_t_s;
         self.speed += acceleration * delta_t_s;
         self.speed = self.speed.clamp(-self.max_speed, self.max_speed);
     }

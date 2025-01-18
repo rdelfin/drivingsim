@@ -1,8 +1,8 @@
 use crate::dynamics::VehicleState;
-use nalgebra::{Rotation2, Vector2};
 use std::time::Duration;
 
 mod dynamics;
+mod render;
 
 #[derive(Default)]
 pub struct SimState {
@@ -49,5 +49,9 @@ impl Simulator {
 
     pub fn observe<O: Observer>(&self, observer: &O) -> O::Observation {
         observer.observe(&self.state)
+    }
+
+    pub fn get_state(&self) -> &SimState {
+        &self.state
     }
 }
