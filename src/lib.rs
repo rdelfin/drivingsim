@@ -79,3 +79,38 @@ impl Simulator {
         &self.state
     }
 }
+
+pub struct RobotObserver;
+pub struct RobotObservation {
+    pub speed: f32,
+    pub distance_to_reward: f32,
+    pub angle_to_reward: f32,
+}
+
+impl Observer for RobotObserver {
+    type Observation = RobotObservation;
+    fn observe(&self, state: &SimState) -> RobotObservation {
+        let nearest_reward_vector = state
+            .reward_points
+            .iter()
+            .map(|(p, _)| p - state.vehicle_state.position)
+            .fold(None, |max, x| {
+                let x_norm = x.norm();
+                match max {
+                    None => Some(x),
+                    Some(y) => Some(if x_norm > y.norm() { x } else { y }),
+                }
+            })
+            .unwrap_or_default();
+        let vehicle_angle_vec = Vector2::new(
+            state.vehicle_state.angle.cos(),
+            state.vehicle_state.angle.sin(),
+        );
+
+        RobotObservation {
+            speed: state.vehicle_state.speed,
+            distance_to_reward: nearest_reward_vector.norm(),
+            angle_to_reward: vehicle_angle_vec.angle(&nearest_reward_vector),
+        }
+    }
+}

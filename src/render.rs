@@ -70,7 +70,7 @@ impl EventHandler for GgezRender {
                 .rotation(state.vehicle_state.angle),
         );
 
-        for (point, val) in &state.reward_points {
+        for (point, _) in &state.reward_points {
             canvas.draw(
                 &graphics::Quad,
                 graphics::DrawParam::new()
