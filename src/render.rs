@@ -61,7 +61,7 @@ impl EventHandler for GgezRender {
             &graphics::Quad,
             graphics::DrawParam::new()
                 .dest_rect(graphics::Rect::new(
-                    car_position.x - state.vehicle_state.base_length / 2.,
+                    car_position.x,
                     car_position.y - 25.,
                     state.vehicle_state.base_length,
                     50.,
@@ -69,6 +69,16 @@ impl EventHandler for GgezRender {
                 .color(Color::RED)
                 .rotation(state.vehicle_state.angle),
         );
+
+        for (point, val) in &state.reward_points {
+            canvas.draw(
+                &graphics::Quad,
+                graphics::DrawParam::new()
+                    .dest_rect(graphics::Rect::new(point.x - 10., point.y - 10., 20., 20.))
+                    .color(Color::GREEN),
+            )
+        }
+
         canvas.draw(
             &angle_display,
             graphics::DrawParam::from([10.0, 10.0]).color(Color::WHITE),
@@ -76,7 +86,7 @@ impl EventHandler for GgezRender {
         canvas.finish(ctx)
     }
 
-    fn key_down_event(&mut self, ctx: &mut Context, input: KeyInput, _repeat: bool) -> GameResult {
+    fn key_down_event(&mut self, _ctx: &mut Context, input: KeyInput, _repeat: bool) -> GameResult {
         if let Some(keycode) = input.keycode {
             match keycode {
                 KeyCode::A => {
