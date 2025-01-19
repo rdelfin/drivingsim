@@ -1,2 +1,6 @@
+jupyterlab==4.3.4
 maturin==1.8.1
+numpy==1.26.4
 patchelf==0.17.2.1
+pillow==11.1.0
+stable_baselines3==2.4.1
