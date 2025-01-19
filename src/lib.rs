@@ -126,8 +126,17 @@ pub struct Simulator {
 #[pymethods]
 impl Simulator {
     #[new]
-    pub fn new_py(initial_vehicle_state: VehicleState) -> Simulator {
-        Simulator::new(initial_vehicle_state)
+    pub fn new_py(
+        initial_vehicle_state: VehicleState,
+        reward_points: Vec<(f32, f32, f32)>,
+    ) -> Simulator {
+        Simulator::new(
+            initial_vehicle_state,
+            reward_points
+                .into_iter()
+                .map(|(x, y, r)| (Vector2::new(x, y), r))
+                .collect(),
+        )
     }
 
     pub fn advance_s(&mut self, action: Action, delta_t_s: f32) -> f32 {
@@ -140,14 +149,18 @@ impl Simulator {
 }
 
 impl Simulator {
-    pub fn new(initial_vehicle_state: VehicleState) -> Simulator {
+    pub fn new(
+        initial_vehicle_state: VehicleState,
+        reward_points: Vec<(Vector2<f32>, f32)>,
+    ) -> Simulator {
         Simulator {
             state: SimState {
                 vehicle_state: initial_vehicle_state,
-                reward_points: vec![
+                reward_points,
+                /*reward_points: vec![
                     // (Vector2::new(10., 10.), 10.),
                     (Vector2::new(1000., 700.), 100.),
-                ],
+                ],*/
             },
             max_accelerator: 100.,
             max_angle: std::f32::consts::FRAC_PI_4,

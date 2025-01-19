@@ -5,6 +5,7 @@ use ggez::event::{self, EventHandler};
 use ggez::graphics::{self, Color, Text};
 use ggez::input::keyboard::{KeyCode, KeyInput};
 use ggez::{Context, ContextBuilder, GameResult};
+use nalgebra::Vector2;
 
 pub struct GgezRender {
     simulator: Simulator,
@@ -16,12 +17,18 @@ pub struct GgezRender {
 impl GgezRender {
     pub fn new(_ctx: &mut Context) -> GgezRender {
         GgezRender {
-            simulator: Simulator::new(VehicleState {
-                position_x: 700.,
-                position_y: 400.,
-                angle: 0.,
-                ..Default::default()
-            }),
+            simulator: Simulator::new(
+                VehicleState {
+                    position_x: 700.,
+                    position_y: 400.,
+                    angle: 0.,
+                    ..Default::default()
+                },
+                vec![
+                    (Vector2::new(10., 10.), 10.),
+                    (Vector2::new(1000., 700.), 100.),
+                ],
+            ),
             picked_angle: 0.,
             w_pressed: false,
             s_pressed: false,
