@@ -13,3 +13,9 @@ jupyter:
 .PHONY: jupyter-remote
 jupyter-remote:
 	./venv/bin/jupyter lab --notebook-dir=notebooks --ip=0.0.0.0
+
+.PHONY: setup
+setup:
+	python3 -m venv venv
+	./venv/bin/pip3 install -r requirements.txt
+	echo "Please run \"source ./venv/bin/activate\" on your shell"
