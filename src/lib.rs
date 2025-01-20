@@ -93,6 +93,10 @@ impl SimState {
     pub fn gen_image_png(&self) -> Vec<u8> {
         self.gen_image_impl().encode_png().unwrap()
     }
+
+    pub fn get_vehicle_state_clone(&self) -> VehicleState {
+        self.vehicle_state.clone()
+    }
 }
 
 #[cfg_attr(feature = "python", pyclass)]

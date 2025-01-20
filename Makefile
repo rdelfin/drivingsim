@@ -8,11 +8,11 @@ ipython:
 
 .PHONY: jupyter
 jupyter:
-	./venv/bin/jupyter lab --notebook-dir=notebooks
+	./venv/bin/jupyter lab
 
 .PHONY: jupyter-remote
 jupyter-remote:
-	./venv/bin/jupyter lab --notebook-dir=notebooks --ip=0.0.0.0
+	./venv/bin/jupyter lab --ip=0.0.0.0
 
 .PHONY: setup
 setup:
